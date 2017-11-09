@@ -1,3 +1,7 @@
+#############################################################
+# Lab 1 by Kim Larsson (kimla207) and János Dani (janda553) #
+#############################################################
+
 Task 1, List all employees, i.e. all tuples in the jbemployee relation.:
 
 mysql> select * from jbemployee;
