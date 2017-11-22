@@ -1,0 +1,85 @@
+##############################################################
+# Lab 4a by Kim Larsson (kimla207) and János Dani (janda553) #
+##############################################################
+
+
+ ##### Functional dependencies #####
+
+## Passenger ##
+
+FD1: {pass id} -> {first name}
+FD2: {pass id} -> {last name}
+-- Union rule
+FD3: {pass id} -> {first name, last name} 
+
+Hence we have the only candidate key: {pass id}
+
+
+## Booked ##
+
+FD1: {book id} -> {passenger}
+FD2: {book id} -> {price}
+-- Union rule
+FD3: {book id} -> {passenger, price}
+
+Hence we have the only candidate key: {pass id}
+
+## Credit card ##
+
+FD1: {card nr} -> {holder}
+
+Hence we have the only candidate key: {card nr}
+
+## Payment ##
+
+FD1: {} -> {}
+FD2: {} -> {}
+-- 
+FD3: {} -> {}
+
+Hence we have the only candidate key: {}
+
+## Reservation ##
+
+FD1: {} -> {}
+FD2: {} -> {}
+-- 
+FD3: {} -> {}
+
+Hence we have the only candidate key: {}
+
+## Contact ##
+
+FD1: {} -> {}
+FD2: {} -> {}
+-- 
+FD3: {} -> {}
+
+Hence we have the only candidate key: {}
+
+## Weekly schedule ##
+
+FD1: {} -> {}
+FD2: {} -> {}
+-- 
+FD3: {} -> {}
+
+Hence we have the only candidate key: {}
+
+## Route ##
+
+FD1: {} -> {}
+FD2: {} -> {}
+-- 
+FD3: {} -> {}
+
+Hence we have the only candidate key: {}
+
+## Flight ##
+
+FD1: {} -> {}
+FD2: {} -> {}
+-- 
+FD3: {} -> {}
+
+Hence we have the only candidate key: {}
