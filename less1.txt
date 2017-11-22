@@ -1,0 +1,47 @@
+FD1: A -> BC
+FD2: C -> AD
+FD3: DE -> F
+
+FD4: A -> D
+FD5: A -> BCD
+FD6: AE -> DE
+FD7: AE -> F
+FD8: AE -> ABCDEF 
+
+
+Contact allt måste vara kopplat till id, det betyder inte att
+kontakten äger sakerna men är kopplad till det
+
+R {A,B,C,D,E,F}
+
+FD1: A -> BC
+FD2: C -> AD
+FD3: DE -> F
+
+Cand( ke)y {A,E} and {C,E}
+Prime attr {A,C,E}
+Non-prime {B,D,F}
+
+
+
+
+
+R1 {A,B,C}
+R2 {C,D}
+R3 {D,E,F}
+
+A -> BCD
+C -> AD
+E -> none
+
+R1{ A, B, C, D}
+R2{ D, E, F}
+
+A -> 
+DE ->
+
+2NF - Ingen non-prime får vara beroende av EN DEL av prime-key.
+Om den är beroende av hela prime-key så är vi OK
+
+3NF - Ingen non-prime får vara beroende av en annan non-prime.
+
