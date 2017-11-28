@@ -1,0 +1,125 @@
+#############################################################
+# Lab 3 by Kim Larsson (kimla207) and János Dani (janda553) #
+#############################################################
+
+----------------------
+------- Task 1 ------- 
+----------------------
+
+
+a)
+
+1NF: no non-atomic values, i.e. no multivalued values.
+2NF: no non-prime attributes that are functionally dependent on a PART of a candidate key.
+
+Relation: R={A,B,C,D}
+Primary key: A
+
+FD1: {A} -> {C}
+FD2: {A,B} -> {D}
+
+Here we have the candidate keys {A,B} and since C is functional dependent on ONLY A we are 
+not in 2NF.
+
+
+b)
+
+3NF: no non-prime attributes that is functionaly dependent on attributes that is NOT a 
+super key.
+
+Relation: R={A,B,C,D}
+Primary key: A
+
+FD1: {A} -> {B}
+FD2: {B} -> {C}
+FD3: {C} -> {D}
+
+Here we have the super key {A} and since both FD2 and FD3 are not dependent on A we are 
+violating the criterias for 3NF.
+
+
+c)
+
+BCNF: for every X -> Y on R we have that X is a superkey.
+
+Relation: R={A,B,C,D}
+Primary key: A
+
+FD1: {A,B} -> {C,D}
+FD2: {C} -> {B}
+
+This example is taken from lecture 5. Both {A,B} and {A,C} is candidate keys but FD2 
+violates the criterium for BCNF since {C} by itself is not a candidate key.
+
+----------------------
+------- Task 2 ------- 
+----------------------
+
+a)
+
+Relation: R={A,B,C,D,E,F}
+
+FD1: {A,B} -> {C}
+FD2: {A} -> {D}
+FD3: {D} -> {A,E}
+FD4: {E} -> {F}
+
+Transitivity rule FD2, FD3:
+FD5: {A} -> {A,E}
+
+Decomposition rule FD5:
+FD6: {A} -> {E} ({A} -> {A} is redundant)
+
+Transitivity rule FD6 FD4:
+FD7: {A} -> {F}
+
+Union rule FD2, FD6, FD7:
+FD8: {A} -> {D,E,F}
+
+Augmentation rule FD8:
+FD9: {A,B} -> {B,D,E,F,}
+
+Union rule FD1, FD9:
+FD10: {A,B} -> {B,C,D,E,F}
+
+This concludes that {A,B} is our only canidate key and we therefore the candidate 
+key is our primary key. 
+
+
+b)
+
+BD-candidate key
+
+Relation: R={A,B,C,D,E,F}
+
+FD1: {A,B} -> {C}
+FD2: {A} -> {D}
+FD3: {D} -> {A,E}
+FD4: {E} -> {F}
+
+
+
+R1: R={B,C,D}
+with
+FD1: {A,B} -> {C}
+With the new candidate key {A,B}.
+
+R2: R={A,D,E,F}
+with
+FD1: {A} -> {D}
+FD2: {D} -> {A,E}
+With the new candidate key {E}.
+
+
+
+c)
+
+
+
+----------------------
+------- Task 3 ------- 
+----------------------
+
+
+
+
