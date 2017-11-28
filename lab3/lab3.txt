@@ -49,7 +49,7 @@ FD1: {A,B} -> {C,D}
 FD2: {C} -> {B}
 
 This example is taken from lecture 5. Both {A,B} and {A,C} is candidate keys but FD2 
-violates the criterium for BCNF since {C} by itself is not a candidate key.
+violates the criterion for BCNF since {C} by itself is not a candidate key.
 
 ----------------------
 ------- Task 2 ------- 
@@ -82,34 +82,28 @@ FD9: {A,B} -> {B,D,E,F,}
 Union rule FD1, FD9:
 FD10: {A,B} -> {B,C,D,E,F}
 
-This concludes that {A,B} is our only canidate key and we therefore the candidate 
-key is our primary key. 
+This concludes that {A,B} is a canidate key and we choose this candidate 
+key to be our primary key.
 
 
 b)
 
 BD-candidate key
 
-Relation: R={A,B,C,D,E,F}
-
-FD1: {A,B} -> {C}
-FD2: {A} -> {D}
-FD3: {D} -> {A,E}
-FD4: {E} -> {F}
+FD2 violates the 2NF criterion therefore we split R in two. We also use
 
 
-
-R1: R={B,C,D}
-with
-FD1: {A,B} -> {C}
-With the new candidate key {A,B}.
-
-R2: R={A,D,E,F}
+R1: R={A,D,E,F}
 with
 FD1: {A} -> {D}
 FD2: {D} -> {A,E}
-With the new candidate key {E}.
+FD3: {E} -> {F}
+and we choose {A} as candidate key.
 
+R2: R={A,B,C}
+with
+FD1: {A,B} -> {C}
+and {A,B} as candidate key.
 
 
 c)
