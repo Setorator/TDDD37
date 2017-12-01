@@ -64,6 +64,7 @@ FD2: {A} -> {D}
 FD3: {D} -> {A,E}
 FD4: {E} -> {F}
 
+------- For candidate key {A,B} -------
 Transitivity rule FD2, FD3:
 FD5: {A} -> {A,E}
 
@@ -82,33 +83,129 @@ FD9: {A,B} -> {B,D,E,F,}
 Union rule FD1, FD9:
 FD10: {A,B} -> {B,C,D,E,F}
 
-This concludes that {A,B} is a canidate key and we choose this candidate 
-key to be our primary key.
+------- For candidate key {B,D} -------
+Decomposition rule FD3:
+FD11: {D} -> {A}
+FD12: {D} -> {E}
+
+Transitivity rule FD12,FD4:
+FD13: {D} -> {F}
+
+Union rule FD11, FD12, FD13:
+FD14: {D} -> {A,E,F}
+
+Augmentation rule FD14:
+FD15: {D,B} -> {A,B,E,F}
+
+Psedo-transitivity rule FD11, FD1:
+FD16: {D,B} -> {C}
+
+Union rule FD15, FD16:
+FD17: {B,D} -> {A,B,C,D,E,F}
+
+------- Conlcusion and PK -------
+
+This concludes that {A,B} and {B,D} is a canidate key and we choose {?,?}
+to be our primary key.
+Look for all potiential ways that an attribute/part
+of an canidatekey could determin a non-prime attribute/attributes
+example: can {A} -> {E,F}, yes becouse FD8 with Decomposition rule
+gives {A} -> {E,F}
+
+{A,B}-candidate key is PK
 
 
-b)
+====================== 2NF task 2b ======================
 
-BD-candidate key
+FD8 together with decomposition rule violates the 2NF criterion therefore we split R in two.
 
-FD2 violates the 2NF criterion therefore we split R in two. We also use
-
-
-R1: R={A,D,E,F}
-with
-FD1: {A} -> {D}
-FD2: {D} -> {A,E}
-FD3: {E} -> {F}
-and we choose {A} as candidate key.
-
-R2: R={A,B,C}
-with
+Relation: R={A,B,C,D,E,F}
 FD1: {A,B} -> {C}
-and {A,B} as candidate key.
+FD2: {A} -> {D}
+FD3: {D} -> {A,E}
+FD4: {E} -> {F}
+
+========= R1 =========
+R1 = {A,E,F}
+FD1: {A} -> {E,F}
+FD2: {E} -> {F}
+
+Candidate keys: {A}
+======================
+
+========= R2 =========
+R2 = {A,B,C,D}
+FD1: {A,B} -> {C}
+FD2: {B,D} -> {C}
+FD3: {A} -> {D}
+FD4: {D} -> {A}
+
+Augmentation Rule FD3:
+FD5: {A,B} -> {B,D}
+Union rule FD1, FD5:
+FD6: {A,B} -> {B,C,D}
+
+Augmentation Rule FD4:
+FD7: {B,D} -> {A,B}
+Union rule FD1, FD7:
+FD6: {B,D} -> {A,B,C}
+
+Candidate keys: {A,B}, {B,D}
+======================
+
+Our new tables are R1, R2 which is all in 2NF
 
 
-c)
+====================== 3NF task 2c ======================
+
+FD1 in R1 violates the 3NF criterion therefore we split R1 in two
+
+R1 = {A,E,F}
+FD1: {A} -> {E,F}
+FD2: {E} -> {F}
+
+========= R3 =========
+R3 = {E,F}
+FD1: {E} -> {F}
+
+Candidate keys: {E}
+======================
+
+========= R4 =========
+R4 = {A,E}
+FD1: {A} -> {E}
+
+Candidate keys: {A}
+======================
+
+Our new tables are R1, R3, R4 which is all in 3NF
 
 
+====================== BCNF task 2d ======================
+
+R2 = {A,B,C,D}
+FD1: {A,B} -> {C}
+FD2: {B,D} -> {C}
+FD3: {A} -> {D}
+FD4: {D} -> {A}
+
+FD3 in R2 violates the BCNF criterion therefore we split R2 in two
+
+========= R5 =========
+R5 = {A,D}
+FD1: {A} -> {D}
+
+Candidate keys: {A}
+======================
+
+========= R6 =========
+R6 = {A,B,C}
+FD1: {A,B} -> {C}
+
+Candidate keys: {A,B}
+======================
+
+Our new and final tables are R1, R3, R4, R5, R6
 
 ----------------------
 ------- Task 3 ------- 
