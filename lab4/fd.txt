@@ -20,9 +20,9 @@ Hence we have the only candidate key: {pass id}
 FD1: {book id} -> {reservation}
 FD2: {book id} -> {card}
 FD3: {book id} -> {passenger}
-FD4: {book id} -> {price}
+FD4: {book id} -> {total price}
 -- Union rule
-FD5: {book id} -> {reservation, card, passenger, price}
+FD5: {book id} -> {reservation, card, passenger, total price}
 
 Hence we have the only candidate key: {book id}
 
@@ -58,8 +58,9 @@ FD2: {schedule id} -> {flight}
 FD3: {schedule id} -> {dep time}
 FD4: {schedule id} -> {year}
 FD5: {schedule id} -> {weekday}
+FD6: {schedule id} -> {factor}
 -- Union rule
-FD6: {schedule id} -> {route, flight, dep time, year, weekday}
+FD7: {schedule id} -> {route, flight, dep time, year, weekday, factor}
 
 Hence we have the only candidate key: {schedule id}
 
@@ -67,10 +68,11 @@ Hence we have the only candidate key: {schedule id}
 
 FD1: {id} -> {arr city}
 FD2: {id} -> {dep city}
+FD3: {id} -> {price}
 -- Union rule
-FD3: {id} -> {arr city, dep city}
+FD4: {id} -> {arr city, dep city, price}
 
-FD4: {arr city, dep city} -> {id}
+FD5: {arr city, dep city} -> {id}
 
 Hence we have a special case with a circular dependency which gives us the candidate key: {id}
 A special constraint here is that the combination {arr city, dep city} is unique. This can be
@@ -79,9 +81,17 @@ checked with a trigger when inserting a new route entry.
 ## Flight ##
 
 FD1: {flight id} -> {week}
+FD2: {flight id} -> {profit}
+-- Union rule
+FD3: {flight id} -> {week, profit}
 
 Hence we have the only candidate key: {flight id}
 
+## Plane ##
+
+FD1: {plane id} -> {seats}
+
+Hence we have the only candidate key: {plane id}
 
 
 ## Normal forms ##
