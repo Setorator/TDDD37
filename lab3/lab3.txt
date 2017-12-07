@@ -1,0 +1,368 @@
+#############################################################
+# Lab 3 by Kim Larsson (kimla207) and János Dani (janda553) #
+#############################################################
+
+----------------------
+------- Task 1 ------- 
+----------------------
+
+
+a)
+
+1NF: no non-atomic values, i.e. no multivalued values.
+2NF: no non-prime attributes that are functionally dependent on a PART of a candidate key.
+
+Relation: R={A,B,C,D}
+Primary key: A
+
+FD1: {A} -> {C}
+FD2: {A,B} -> {D}
+
+Here we have the candidate keys {A,B} and since C is functional dependent on ONLY A we are 
+not in 2NF.
+
+
+b)
+
+3NF: no non-prime attributes that is functionaly dependent on attributes that is NOT a 
+super key.
+
+Relation: R={A,B,C,D}
+Primary key: A
+
+FD1: {A} -> {B}
+FD2: {B} -> {C}
+FD3: {C} -> {D}
+
+Here we have the super key {A} and since both FD2 and FD3 are not dependent on A we are 
+violating the criterias for 3NF.
+
+
+c)
+
+BCNF: for every X -> Y on R we have that X is a superkey.
+
+Relation: R={A,B,C,D}
+Primary key: A
+
+FD1: {A,B} -> {C,D}
+FD2: {C} -> {B}
+
+This example is taken from lecture 5. Both {A,B} and {A,C} is candidate keys but FD2 
+violates the criterion for BCNF since {C} by itself is not a candidate key.
+
+----------------------
+------- Task 2 ------- 
+----------------------
+
+a)
+
+Relation: R={A,B,C,D,E,F}
+
+FD1: {A,B} -> {C}
+FD2: {A} -> {D}
+FD3: {D} -> {A,E}
+FD4: {E} -> {F}
+
+------- For candidate key {A,B} -------
+Transitivity rule FD2, FD3:
+FD5: {A} -> {A,E}
+
+Decomposition rule FD5:
+FD6: {A} -> {E} ({A} -> {A} is redundant)
+
+Transitivity rule FD6 FD4:
+FD7: {A} -> {F}
+
+Union rule FD2, FD6, FD7:
+FD8: {A} -> {D,E,F}
+
+Augmentation rule FD8:
+FD9: {A,B} -> {B,D,E,F,}
+
+Union rule FD1, FD9:
+FD10: {A,B} -> {B,C,D,E,F}
+
+------- For candidate key {B,D} -------
+Decomposition rule FD3:
+FD11: {D} -> {A}
+FD12: {D} -> {E}
+
+Transitivity rule FD12,FD4:
+FD13: {D} -> {F}
+
+Union rule FD11, FD12, FD13:
+FD14: {D} -> {A,E,F}
+
+Augmentation rule FD14:
+FD15: {D,B} -> {A,B,E,F}
+
+Psedo-transitivity rule FD11, FD1:
+FD16: {D,B} -> {C}
+
+Union rule FD15, FD16:
+FD17: {B,D} -> {A,B,C,E,F}
+
+------- Conlcusion and PK -------
+
+This concludes that {A,B} and {B,D} is a canidate key and we choose {?,?}
+to be our primary key.
+Look for all potiential ways that an attribute/part
+of an canidate key could determine a non-prime attribute/attributes
+example: can {A} -> {E,F}, yes because FD8 with Decomposition rule
+gives {A} -> {E,F}
+
+{A,B}-candidate key is PK
+
+
+====================== 2NF task 2b ======================
+
+FD8 together with decomposition rule violates the 2NF criterion therefore we split R in two.
+
+Relation: R={A,B,C,D,E,F}
+FD1: {A,B} -> {C}
+FD2: {A} -> {D}
+FD3: {D} -> {A,E}
+FD4: {E} -> {F}
+
+========= R1 =========
+R1 = {A,E,F}
+FD1: {A} -> {E,F}
+FD2: {E} -> {F}
+
+Candidate keys: {A}
+======================
+
+========= R2 =========
+R2 = {A,B,C,D}
+FD1: {A,B} -> {C}
+FD2: {B,D} -> {C}
+FD3: {A} -> {D}
+FD4: {D} -> {A}
+
+Augmentation Rule FD3:
+FD5: {A,B} -> {B,D}
+Union rule FD1, FD5:
+FD6: {A,B} -> {B,C,D}
+
+Augmentation Rule FD4:
+FD7: {B,D} -> {A,B}
+Union rule FD1, FD7:
+FD6: {B,D} -> {A,B,C}
+
+Candidate keys: {A,B}, {B,D}
+======================
+
+Our new tables are R1, R2 which is all in 2NF
+
+
+====================== 3NF task 2c ======================
+
+FD1 in R1 violates the 3NF criterion therefore we split R1 in two
+
+R1 = {A,E,F}
+FD1: {A} -> {E,F}
+FD2: {E} -> {F}
+
+========= R3 =========
+R3 = {E,F}
+FD1: {E} -> {F}
+
+Candidate keys: {E}
+======================
+
+========= R4 =========
+R4 = {A,E}
+FD1: {A} -> {E}
+
+Candidate keys: {A}
+======================
+
+Our new tables are R2, R3, R4 which is all in 3NF
+
+
+====================== BCNF task 2d ======================
+
+Both FD3 and FD4 in R2 violates the BCNF criterion therefore we split R2 in two
+with respect to FD3
+
+R2 = {A,B,C,D}
+FD1: {A,B} -> {C}
+FD2: {B,D} -> {C}
+FD3: {A} -> {D}
+FD4: {D} -> {A}
+
+========= R5 =========
+R5 = {A,D}
+FD1: {A} -> {D}
+
+Candidate keys: {A}
+======================
+
+========= R6 =========
+R6 = {A,B,C}
+FD1: {A,B} -> {C}
+
+Candidate keys: {A,B}
+======================
+
+Our new and final tables are R3, R4, R5, R6
+
+----------------------
+------- Task 3 ------- 
+----------------------
+
+====================== Task 3a ======================
+
+
+For simplicity we choose to rename all the attributes according to the following:
+
+========= Original naming =========
+
+BOOK(Title#, Title, Author#, BookType, Price, AuthorName, Puplisher)
+
+FD1: {Title#} -> {Title, BookType, Publisher}
+FD2: {Author#} -> {AuthorName}
+FD3: {BokkType} -> {Price}
+
+===================================
+
+============= Renamed =============
+
+R(A,B,C,D,E,F,G)
+
+FD1: {A} -> {B,D,G}
+FD2: {C} -> {F}
+FD3: {D} -> {E}
+
+Decomposition FD1:
+FD4: {A} -> {B}
+FD5: {A} -> {D}
+FD6: {A} -> {G}
+
+Transitivity rule FD5, FD3:
+FD7: {A} -> {E}
+
+Union rule FD1, FD7:
+FD8: {A} -> {B,D,E,G}
+
+Augumentation rule FD8:
+FD9: {A,C} -> {B,C,D,E,G}
+
+Augumentation rule FD2:
+FD10: {A,C} -> {A,F}
+
+Union rule FD9, FD10:
+FD11: {A,C} -> {A,B,C,D,E,F,G}
+
+------- Conlcusion and NF -------
+We have only one candidate key, {A,C}, which therefore is selected to be our primary key.
+This is coherent to the task description since Title# and Author# (A and C) are primary
+keys in the original relationship.
+
+The relationship is only in 1NF since FD1, as example, violates the condition for 2NF
+where {B,D,G} is only determined by a part of the candidate key.
+
+====================== Task 3b ======================
+
+============= 2NF =============
+
+We split the relation R in two with respect to FD8:
+
+========= R1 =========
+R1 = {A,B,D,E,G}
+FD1: {A} -> {B,D,G}
+FD2: {D} -> {E}
+
+Transitivity rule FD1, FD2:
+FD3: {A} -> {E}
+
+Union rule FD1, FD3:
+FD4: {A} -> {B,D,G,E}
+
+Candidate keys: {A}
+======================
+
+========= R2 =========
+R2 = {A,C,F}
+FD1: {C} -> {F}
+
+Augmentation rule FD1:
+FD2: {A,C} -> {A,F}
+
+Removing redundancy FD2:
+FD3: {A,C} -> {F}
+
+Candidate keys: {A,C}
+======================
+
+R2 violates 2NF because of FD1.
+We split the relation R2 in two.
+
+========= R3 =========
+R3 = {C,F}
+FD1: {C} -> {F}
+
+Candidate keys: {C}
+======================
+
+========= R4 =========
+R5 = {A,C}
+Only trivial functional dependencies
+
+Candidate keys: {A,C}
+======================
+
+We now have relations R1, R3 and R4.
+
+============= 3NF =============
+
+R1 violates 3NF because of FD2.
+We split it in two.
+
+========= R5 =========
+R5 = {D,E}
+FD1: {D} -> {E}
+
+Candidate keys: {D}
+======================
+
+========= R6 =========
+R6 = {A,B,D,G}
+FD1: {A} -> {B,D,G}
+
+Candidate keys: {A}
+======================
+
+We now have relations R3, R4, R5 and R6.
+These also upholds the conditions for BCNF giving that no further modifications are needed.
+This gives us the final answer:
+
+
+========= R3 =========
+R3 = {Author#,AuthorName}
+FD1: {Author#} -> {AuthorName}
+
+Candidate keys: {Author#}
+======================
+
+========= R4 =========
+R5 = {Title#,Author#}
+Only trivial functional dependencies
+
+Candidate keys: {Title#,Author#}
+======================
+
+========= R5 =========
+R5 = {BookType,Price}
+FD1: {BookType} -> {Price}
+
+Candidate keys: {BookType}
+======================
+
+========= R6 =========
+R6 = {Title#,Title,BookType,Publisher}
+FD1: {Title#} -> {Title,BookType,Publisher}
+
+Candidate keys: {Title#}
+======================

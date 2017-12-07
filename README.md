@@ -11,7 +11,7 @@ The new_file.py is a script for creating a new txt file with a header at the thr
 
 To use the script one needs to run the command
 '''
-chmod 777 new_file.txt
+chmod 777 new_file.py
 '''
 in the same folder as the script then run it as follows
 '''
