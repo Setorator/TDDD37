@@ -1,0 +1,22 @@
+Further changes needed before the implementation (I will be now in my room until 15:30):
+
+! Booked is subclass of reservation thus reservation id is a PK in Booked and a FK to reservation.
+
+! The relationship ticket nr between Passenger and Booked should be removed as
+  the information is derived through a join between Booked, Reservation and reserved pass.
+
+! The ticket number attribute from Booked should be moved to the reserved pass relationship.  
+
+! WeeklySchedule:Flight is 1:M not the other way
+? Why?
+
+! Flight (not WeeklySchedule) is connected to Reservation.
+? Why?, What is WeeklySchedule and what is flight?
+
+! Plane:Flight 1:M
+# Fixed
+
+! In Weekday PK consists of (year, day)
+? Why year, should weekday have a relation to year then?
+
+! The translation needs to be updated after the changes.
