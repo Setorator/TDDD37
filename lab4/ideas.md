@@ -1,6 +1,0 @@
-
-# A database for climbing routes at a climbing facility.
-
-## Ex:
-What routes, holdings and gradings that exists.
-Climbers statistics of the routes, i.e. attempts, success total grade.
