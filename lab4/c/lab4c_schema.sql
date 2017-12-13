@@ -3,18 +3,14 @@
 -- #############################################################
 
 -- Drop constraints
-alter table airport  drop foreign key fk_located_in;
 alter table route drop foreign key fk_arrives_to;
 alter table route drop foreign key fk_departs_from;
-alter table route_price drop foreign key fk_route;
-alter table route_price drop foreign key fk_route_year;
 alter table weekday drop foreign key fk_weekday_year;
 alter table weekly_schedule drop foreign key fk_weekly_route;
 alter table weekly_schedule drop foreign key fk_day;
 alter table weekly_schedule drop foreign key fk_schedule_year;
 alter table contact drop foreign key fk_contact_pass;
 alter table flight drop foreign key fk_flight_schedule;
-alter table flight drop foreign key fk_plane;
 alter table reservation drop foreign key fk_responsible;
 alter table reservation drop foreign key fk_flight;
 alter table reserved_pass drop foreign key fk_passenger;
@@ -23,15 +19,12 @@ alter table booked drop foreign key fk_booked_res;
 alter table booked drop foreign key fk_credit_card;
 
 -- Drop tables
-drop table city;
 drop table airport;
 drop table route;
 drop table year;
-drop table route_price;
 drop table weekday;
 drop table passenger;
 drop table weekly_schedule;
-drop table plane;
 drop table contact;
 drop table flight;
 drop table reservation;
@@ -44,26 +37,22 @@ drop table booked;
 -- ################## Create tables here #######################
 -- #############################################################
 
--- Create table city 
-create table city(
-       city_id integer not null,
-       name varchar(30) not null,
-
-       constraint pk_city primary key(city_id));
-
 -- Create table airport 
 create table airport(
-       airport_id integer not null,
-       city integer not null,
+       airport_code varchar(3) not null,
+       name varchar(30) not null,
+       country varchar(30) not null,
 
        constraint pk_airport primary key(airport_id));
 
--- Create table routedef 
+-- Create table route 
 create table route(
-       route_id integer not null,
+       route_id varchar(10) not null,
+       year integer not null,
        arr_to integer not null,
        dep_from integer not null,
-
+       route_price double not null,
+      
        constraint pk_route primary key(route_id));
 
 -- Create table year 
@@ -72,15 +61,6 @@ create table year(
        profit double not null,
 
        constraint pk_year primary key(year));
-
--- Create table route_price 
-create table route_price(
-       route integer not null,
-       year integer not null,
-       profit double not null,
-
-       constraint pk_route_price primary key(route),
-       constraint pk_route_price primary key(year));
 
 -- Create table weekday 
 create table weekday(
@@ -94,9 +74,8 @@ create table weekday(
 -- Create table passenger 
 create table passenger(
        pass_id integer not null,
-       first_name varchar(30) not null,
-       last_name varchar(30) not null,
-
+       name varchar(60) not null,
+       
        constraint pk_passenger primary key(pass_id));
 
 -- Create table weekly_schedule 
@@ -108,13 +87,6 @@ create table weekly_schedule(
        year integer not null,
 
        constraint pk_weekly_schedule primary key(schedule_id));
-
--- Create table plane 
-create table plane(
-       plane_id integer not null,
-       seats integer not null,
-
-       constraint pk_plane primary key(plane_id));
 
 -- Create table contact 
 create table contact(
@@ -128,7 +100,6 @@ create table contact(
 create table flight(
        flight_id integer not null,
        schedule integer not null,
-       plane integer not null,
        week integer not null,  
 
        constraint pk_flight primary key(flight_id));
@@ -138,6 +109,7 @@ create table reservation(
        res_number integer not null,
        contact integer not null,
        flight integer not null,
+       nr_of_pass integer not null,
 
        constraint pk_reservation primary key(res_number));
 
@@ -169,18 +141,15 @@ create table booked(
 -- #############################################################
 
 
-alter table airport  add constraint fk_located_in foreign key (city) references city(city_id);
 alter table route add constraint fk_arrives_to foreign key (arr_to) references airport(airport_id);
 alter table route add constraint fk_departs_from foreign key (dep_from) references airport(airport_id);
-alter table route_price add constraint fk_route foreign key (route) references route(route_id);
-alter table route_price add constraint fk_route_year foreign key (year) references year(year);
+alter table route add constraint fk_route_year foreign key (year) references year(year);
 alter table weekday add constraint fk_weekday_year foreign key (year) references year(year);
 alter table weekly_schedule add constraint fk_weekly_route foreign key (route) references route(route_id);
 alter table weekly_schedule add constraint fk_day foreign key (day) references weekday(day);
 alter table weekly_schedule add constraint fk_schedule_year foreign key (year) references weekday(year);
 alter table contact add constraint fk_contact_pass foreign key (contact_id) references passenger(pass_id);
 alter table flight add constraint fk_flight_schedule foreign key (schedule) references weekly_schedule(schedule_id);
-alter table flight add constraint fk_plane foreign key (plane) references plane(plane_id);
 alter table reservation add constraint fk_responsible foreign key (contact) references contact(contact_id);
 alter table reservation add constraint fk_flight foreign key (flight) references flight(flight_id);
 alter table reserved_pass add constraint fk_passenger foreign key (pass_id) references passenger(pass_id);
