@@ -1,6 +1,4 @@
--- -------------------
--- Task 5
--- -------------------
+
 
 
 -- Creating tables with respectiv primary keys
