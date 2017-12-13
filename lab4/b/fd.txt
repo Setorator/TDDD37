@@ -1,0 +1,102 @@
+##############################################################
+# Lab 4a by Kim Larsson (kimla207) and János Dani (janda553) #
+##############################################################
+
+
+ ##### Functional dependencies #####
+
+## Passenger ##
+
+FD1: {pass id} -> {first name}
+FD2: {pass id} -> {last name}
+-- Union rule
+FD3: {pass id} -> {first name, last name} 
+
+Hence we have the only candidate key: {pass id}
+
+
+## Booked ##
+
+FD1: {book id} -> {reservation}
+FD2: {book id} -> {card}
+FD3: {book id} -> {passenger}
+FD4: {book id} -> {total price}
+-- Union rule
+FD5: {book id} -> {reservation, card, passenger, total price}
+
+Hence we have the only candidate key: {book id}
+
+## Credit card ##
+
+FD1: {card nr} -> {holder}
+
+Hence we have the only candidate key: {card nr}
+
+## Reservation ##
+
+FD1: {res number} -> {wflight id}
+FD2: {res number} -> {contact}
+FD3: {res number} -> {passengers}
+-- Union rule
+FD4: {res number} -> {wflight id, contact, passengers}
+
+Hence we have the only candidate key: {res number}
+
+## Contact ##
+
+FD1: {contact id} -> {e-mail}
+FD2: {contact id} -> {phone}
+-- Union rule
+FD3: {contact id} -> {e-mail, phone}
+
+Hence we have the only candidate key: {contact id}
+
+## Weekly schedule ##
+
+FD1: {schedule id} -> {route}
+FD2: {schedule id} -> {flight}
+FD3: {schedule id} -> {dep time}
+FD4: {schedule id} -> {year}
+FD5: {schedule id} -> {weekday}
+FD6: {schedule id} -> {factor}
+-- Union rule
+FD7: {schedule id} -> {route, flight, dep time, year, weekday, factor}
+
+Hence we have the only candidate key: {schedule id}
+
+## Route ##
+
+FD1: {id} -> {arr city}
+FD2: {id} -> {dep city}
+FD3: {id} -> {price}
+-- Union rule
+FD4: {id} -> {arr city, dep city, price}
+
+FD5: {arr city, dep city} -> {id}
+
+Hence we have a special case with a circular dependency which gives us the candidate key: {id}
+A special constraint here is that the combination {arr city, dep city} is unique. This can be
+checked with a trigger when inserting a new route entry.
+
+## Flight ##
+
+FD1: {flight id} -> {week}
+FD2: {flight id} -> {profit}
+-- Union rule
+FD3: {flight id} -> {week, profit}
+
+Hence we have the only candidate key: {flight id}
+
+## Plane ##
+
+FD1: {plane id} -> {seats}
+
+Hence we have the only candidate key: {plane id}
+
+
+## Normal forms ##
+
+We conclude that almost all schemas is in BCNF since all FD:s depends on a single superkey.
+The only exception is the "route" schema where we have a cirucular dependency alongside with
+a trigger. This schema is only in 2NF form, all non-prime attributes depend on the whole
+candidate key.

@@ -1,0 +1,20 @@
+Please change the following and show it to the lab assistant during  the lab before starting the implementation: 
+
+EER:
+XXXXXXXXXXXXXXXXXXXXX- many of the cardinalities are not correct, revise them
+XXXXXXXXXXXXXXXXXXXXX- Airport entity is needed 
+XXXXXXXXXXXXXXXXXXXXX- A weak entity for the Route Price is needed since it changes every year
+XXXXXXXXXXXXXXXXXXXXX- Separate entities are needed for yearlyProfit and weekdayProfit
+XXXXXXXXXXXXXXXXXXXXX- Weekly Schedule should be a weak entity
+XXXXXXXXXXXXXXXXXXXXX- flight.profit, reservation.passengers should be removed
+XXXXXXXXXXXXXXXXXXXXX- booked_passengers should be between reservation and passenger not between reservation and booking as the passengers are filled in before the booking is paid-
+XXXXXXXXXXXXXXXXXXXXX- booked_passengers should have ticket nummber and is M:N
+XXXXXXXXXXXXXXXXXXXXX- booked.bookid should be removed
+XXXXXXXXXXXXXXXXXXXXX- booked is not a weak entity and contains total price which can't be derived
+
+Translation:
+- since booking is a subclass of reservation, booking.id is a PK in booking and at the same time FK to reservation
+- change after updating the diagram
+
+
+
