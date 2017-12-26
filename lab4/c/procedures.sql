@@ -158,4 +158,36 @@ end //
 
 delimiter ;
 
+-- #############################################################
+-- ################# Set up more procedures ####################
+-- #############################################################
 
+create procedure addReservation(in dep_airport_code varchar(3), in arr_airport_code varchar(3), in year integer, in week integer,
+       		 		   in day varchar(10), in dep_time time, in nr_of_pass integer, out res_num integer)
+begin
+	declare route_id varchar(12) default concat(dep_airport_code,'-',arr_airport_code,'-',year);
+	
+	select flight_id into flight
+	from flight	
+	where flight.week = week and
+	      schedule in(
+	      select schedule_id
+	      from weekly_schedule
+	      where weekly_schedule.route = route_id and
+	      	    weekly_schedule.day = day and
+		    weekly_schedule.year = year and
+		    weekly_schedule.dep_time = dep_time);
+
+	insert into reservation(flight, nr_of_pass) values (flight, nr_of_pass);
+
+	select res_number into res_num
+	from reservation
+	order by res_number desc limit 1;
+end//
+
+
+-- #############################################################
+-- ##################### End delimiter #########################
+-- #############################################################
+
+delimiter ;

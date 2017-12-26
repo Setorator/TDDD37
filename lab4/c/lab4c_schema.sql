@@ -105,7 +105,7 @@ create table flight(
 -- Create table reservation 
 create table reservation(
        res_number integer not null auto_increment,
-       contact integer not null,
+       contact integer,
        flight integer not null,
        nr_of_pass integer not null,
 
