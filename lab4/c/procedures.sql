@@ -130,8 +130,28 @@ end //
 -- #############################################################
 
 create trigger rand_ticket_nr before insert on booked_pass
--- for each row?
+for each row
 begin
+	declare is_unique boolean;
+	declare random_nr integer unsigned;
+
+	set is_unique = false;
+	
+	if (new.ticket_nr = 0)
+	then		  
+		
+	repeat
+	set random_nr = ceiling(rand() * 1000000);
+	if (select count(*) from booked_pass where ticket_nr = random_nr) = 0
+	then
+		set is_unique = true;
+	end if;
+	
+	until is_unique = true 
+	end repeat;
+	
+	set new.ticket_nr = random_nr;
+	end if;
 
 end //
 

@@ -122,7 +122,7 @@ create table credit_card(
 create table booked_pass(
        pass_id integer not null,
        reservation_nr integer not null,
-       ticket_nr integer not null,
+       ticket_nr integer not null default 0,
 
        constraint pk_booked_pass primary key(pass_id));
 
