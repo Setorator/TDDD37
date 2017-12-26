@@ -166,7 +166,8 @@ create procedure addReservation(in dep_airport_code varchar(3), in arr_airport_c
        		 		   in day varchar(10), in dep_time time, in nr_of_pass integer, out res_num integer)
 begin
 	declare route_id varchar(12) default concat(dep_airport_code,'-',arr_airport_code,'-',year);
-	
+	declare flight integer;
+
 	select flight_id into flight
 	from flight	
 	where flight.week = week and
