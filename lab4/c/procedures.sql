@@ -125,6 +125,16 @@ begin
 end //
 
 
+-- #############################################################
+-- #################### Set up triggers ########################
+-- #############################################################
+
+create trigger rand_ticket_nr before insert on booked_pass
+-- for each row?
+begin
+
+end //
+
 
 delimiter ;
 
