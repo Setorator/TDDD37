@@ -163,7 +163,7 @@ delimiter ;
 -- #############################################################
 
 create procedure addReservation(in dep_airport_code varchar(3), in arr_airport_code varchar(3), in year integer, in week integer,
-       		 		   in day varchar(10), in dep_time time, in nr_of_pass integer, out res_num integer)
+       		 		   in day varchar(10), in dep_time time, in nr_of_pass integer, out res_nr integer)
 begin
 	declare route_id varchar(12) default concat(dep_airport_code,'-',arr_airport_code,'-',year);
 	declare flight integer;
@@ -181,11 +181,36 @@ begin
 
 	insert into reservation(flight, nr_of_pass) values (flight, nr_of_pass);
 
-	select res_number into res_num
+	select res_number into res_nr
 	from reservation
 	order by res_number desc limit 1;
 end//
 
+create procedure addPassanger(in res_nr integer, in pass_nr integer, in pass_name varchar(60))
+-- Not Done
+begin
+	insert into passenger(pass_id, name, res_nr) values (pass_nr, pass_name);
+	insert into booked_pass(pass_id, reservation_nr) values (pass_nr, res_nr);
+
+end//
+
+create procedure addContact(in res_nr integer, in pass_nr integer, in email varchar(30), in phone bigint)
+-- Really not done
+begin
+	declare con_id integer;
+	select pass_id into con_id
+	from passenger
+	where pass_id = pass_nr
+
+	insert into contact(contact_id, e_mail, phone) values (con_id, email, phone)  
+	update reservation set contact = con_id
+end//
+
+-- #############################################################
+-- ################ The view for all flights ###################
+-- #############################################################
+
+-- create view allFlights as
 
 -- #############################################################
 -- ##################### End delimiter #########################
