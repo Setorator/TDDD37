@@ -190,7 +190,7 @@ end//
 create procedure addPassanger(in res_nr integer, in pass_nr integer, in pass_name varchar(60))
 
 begin
-	insert into passenger(pass_id, name, res_nr) values (pass_nr, pass_name);
+	insert into passenger(pass_id, name) values (pass_nr, pass_name);
 	insert into booked_pass(pass_id, reservation_nr) values (pass_nr, res_nr);
 end//
 
