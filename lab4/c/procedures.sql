@@ -71,8 +71,12 @@ begin
 	declare occupied_seats integer default 0;
 	declare free_seats integer default 0;
 
-	select count(*) into occupied_seats from booked_pass 
-	where reservation_nr in (select res_number from reservation where flight = flightnumber);
+	select count(*) into occupied_seats
+	from booked_pass 
+	where ticket_nr != 0 and reservation_nr in (
+	      select res_number
+	      from reservation
+	      where flight = flightnumber);
 		
 	set free_seats = seats - occupied_seats;
 	return free_seats;
@@ -155,9 +159,6 @@ begin
 
 end //
 
-
-delimiter ;
-
 -- #############################################################
 -- ################# Set up more procedures ####################
 -- #############################################################
@@ -187,24 +188,50 @@ begin
 end//
 
 create procedure addPassanger(in res_nr integer, in pass_nr integer, in pass_name varchar(60))
--- Not Done
+
 begin
 	insert into passenger(pass_id, name, res_nr) values (pass_nr, pass_name);
 	insert into booked_pass(pass_id, reservation_nr) values (pass_nr, res_nr);
-
 end//
 
 create procedure addContact(in res_nr integer, in pass_nr integer, in email varchar(30), in phone bigint)
--- Really not done
+
 begin
 	declare con_id integer;
+	
 	select pass_id into con_id
-	from passenger
-	where pass_id = pass_nr
+	from booked_pass
+	where pass_id = pass_nr and reservation_nr = res_nr;
 
-	insert into contact(contact_id, e_mail, phone) values (con_id, email, phone)  
-	update reservation set contact = con_id
+	insert into contact(contact_id, e_mail, phone) values (con_id, email, phone);  
+	update reservation set contact = con_id where res_number = res_nr;
 end//
+
+
+create procedure addPayment(in res_nr integer, in cardholder_name varchar(60), in credit_card_number bigint)
+
+begin
+	insert into credit_card(card_nr, holder) values (credit_card_number, cardholder_name)
+
+	declare flight_nr integer;
+	declare con integer;
+	declare nr_pass integer;
+	declare tot_price integer
+
+	select contact, flight, nr_of_pass into con, flight_nr, nr_pass 
+	from reservation
+	where res_num = res_nr;
+
+	set tot_price = calculatePrice(flight_nr) * nr_pass
+
+	if(contact = null or calculateFreeSeats(flight_nr) < nr_pass)
+	then select "There were no contact or to litle seats" as message;
+	else
+	insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
+	end if;
+end//
+
+
 
 -- #############################################################
 -- ################ The view for all flights ###################
