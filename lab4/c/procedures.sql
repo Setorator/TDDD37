@@ -7,10 +7,15 @@ drop procedure if exists addDay;
 drop procedure if exists addDestination;
 drop procedure if exists addRoute;
 drop procedure if exists addFlight;
+drop procedure if exists addReservation;
+drop procedure if exists addPassenger;
+drop procedure if exists addContact;
+drop procedure if exists addPayment;
 
 drop function if exists calculateFreeSeats;
 drop function if exists calculatePrice;
 
+drop trigger if exists rand_ticket_nr;
 
 
 delimiter //
@@ -133,7 +138,7 @@ end //
 -- #################### Set up triggers ########################
 -- #############################################################
 
-create trigger rand_ticket_nr after insert on booked
+create trigger rand_ticket_nr before insert on booked_pass
 for each row
 begin
 	declare is_unique boolean;
@@ -167,12 +172,12 @@ create procedure addReservation(in dep_airport_code varchar(3), in arr_airport_c
        		 		   in day varchar(10), in dep_time time, in nr_of_pass integer, out res_nr integer)
 begin
 	declare route_id varchar(12) default concat(dep_airport_code,'-',arr_airport_code,'-',year);
-	declare flight integer;
+	declare flight_nr integer;
 
-	select flight_id into flight
+	select flight_id into flight_nr
 	from flight	
 	where flight.week = week and
-	      schedule in(
+	      flight.schedule in(
 	      select schedule_id
 	      from weekly_schedule
 	      where weekly_schedule.route = route_id and
@@ -180,14 +185,14 @@ begin
 		    weekly_schedule.year = year and
 		    weekly_schedule.dep_time = dep_time);
 
-	insert into reservation(flight, nr_of_pass) values (flight, nr_of_pass);
+	insert into reservation(flight, nr_of_pass) values (flight_nr, nr_of_pass);
 
 	select res_number into res_nr
 	from reservation
 	order by res_number desc limit 1;
 end//
 
-create procedure addPassanger(in res_nr integer, in pass_nr integer, in pass_name varchar(60))
+create procedure addPassenger(in res_nr integer, in pass_nr integer, in pass_name varchar(60))
 
 begin
 	insert into passenger(pass_id, name) values (pass_nr, pass_name);
@@ -211,18 +216,18 @@ end//
 create procedure addPayment(in res_nr integer, in cardholder_name varchar(60), in credit_card_number bigint)
 
 begin
-	insert into credit_card(card_nr, holder) values (credit_card_number, cardholder_name)
-
 	declare flight_nr integer;
 	declare con integer;
 	declare nr_pass integer;
-	declare tot_price integer
+	declare tot_price integer;
+
+	insert into credit_card(card_nr, holder) values (credit_card_number, cardholder_name);
 
 	select contact, flight, nr_of_pass into con, flight_nr, nr_pass 
 	from reservation
 	where res_num = res_nr;
 
-	set tot_price = calculatePrice(flight_nr) * nr_pass
+	set tot_price = calculatePrice(flight_nr) * nr_pass;
 
 	if(contact = null or calculateFreeSeats(flight_nr) < nr_pass)
 	then select "There were no contact or to litlle seats" as message;
@@ -231,12 +236,11 @@ begin
 	end if;
 end//
 
-
-
 -- #############################################################
 -- ################ The view for all flights ###################
 -- #############################################################
 
+/*
 create view allFlights(departure_city, destination_city, departure_time, departure_day, departure_week, departure_year, nr_of_free_seats, current_price_per_seat) as
 
 select schedule_cities.departure,
@@ -264,6 +268,9 @@ on (schedule.route_id = citys.route_id)) as schedule_cities
 on (wFlight.schedule = schedule_cities.schedule_id)
 
 ;
+
+*/
+
 -- #############################################################
 -- ##################### End delimiter #########################
 -- #############################################################
