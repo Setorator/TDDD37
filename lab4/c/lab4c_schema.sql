@@ -33,7 +33,7 @@ drop table booked_pass;
 drop table booked;
 
 -- #############################################################
--- ################## Create tables here #######################
+-- #                  Create tables here                       #
 -- #############################################################
 
 -- Create table airport 
@@ -135,7 +135,7 @@ create table booked(
        constraint pk_booked primary key(reservation));
 
 -- #############################################################
--- ################## Set up foreign keys ######################
+-- #                  Set up foreign keys                      #
 -- #############################################################
 
 

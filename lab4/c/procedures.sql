@@ -1,5 +1,5 @@
 -- #############################################################
--- ################## Set up procedures ########################
+-- #                  Set up procedures                        #
 -- #############################################################
 
 drop procedure if exists addYear;
@@ -66,7 +66,7 @@ begin
 end//
 
 -- #############################################################
--- #################### Helpfunctions ##########################
+-- #                      Helpfunctions                        #
 -- #############################################################
 
 create function calculateFreeSeats(flightnumber integer)
@@ -135,7 +135,7 @@ end //
 
 
 -- #############################################################
--- #################### Set up triggers ########################
+-- #                    Set up triggers                        #
 -- #############################################################
 
 create trigger rand_ticket_nr before insert on booked_pass
@@ -165,7 +165,7 @@ begin
 end //
 
 -- #############################################################
--- ################# Set up more procedures ####################
+-- #                 Set up more procedures                    #
 -- #############################################################
 
 create procedure addReservation(in dep_airport_code varchar(3), in arr_airport_code varchar(3), in year integer, in week integer,
@@ -257,9 +257,9 @@ begin
 end//
 
 -- #############################################################
--- ################ The view for all flights ###################
+-- #                The view for all flights                   #
 -- #############################################################
-
+-- Split up to several views that combines in allFlight view
 /*
 create view allFlights(departure_city, destination_city, departure_time, departure_day, departure_week, departure_year, nr_of_free_seats, current_price_per_seat) as
 
@@ -292,7 +292,7 @@ on (wFlight.schedule = schedule_cities.schedule_id)
 */
 
 -- #############################################################
--- ##################### End delimiter #########################
+-- #                     End delimiter                         #
 -- #############################################################
 
 delimiter ;
