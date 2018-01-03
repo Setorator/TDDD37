@@ -80,7 +80,7 @@ create table passenger(
 create table weekly_schedule(
        schedule_id integer not null auto_increment,
        route varchar(12) not null,
-       dep_time timestamp not null,
+       dep_time time not null,
        day varchar(10) not null,
        year integer not null,
 
@@ -98,7 +98,7 @@ create table contact(
 create table flight(
        flight_id integer not null auto_increment,
        schedule integer not null,
-       week integer not null,  
+       week integer not null,
 
        constraint pk_flight primary key(flight_id));
 
