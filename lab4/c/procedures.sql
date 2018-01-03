@@ -54,7 +54,7 @@ begin
        	where route.arr_to = arrival_airport_code and route.dep_from = departure_airport_code and route.year = year;
 
 	insert into weekly_schedule (route, dep_time, day, year) 
-	values (r_id, departure_time, day, year);	
+	values (r_id, departure_time, day, year);
 
 	
 	select schedule_id into s_id from weekly_schedule order by weekly_schedule.schedule_id desc limit 1;
@@ -185,7 +185,15 @@ begin
 		    weekly_schedule.year = year and
 		    weekly_schedule.dep_time = dep_time);
 
-	insert into reservation(flight, nr_of_pass) values (flight_nr, nr_of_pass);
+	if not (flight_nr is null) then
+	   if (calculateFreeSeats(flight_nr) >= nr_of_pass) then
+	      insert into reservation(flight, nr_of_pass) values (flight_nr, nr_of_pass); 
+	   else
+	      select "There are not enough seats available on the chosen flight" as "Error";
+	   end if;
+	else
+	   select "There exists no flight for the given route, date and time" as "Error";
+	end if;
 
 	select res_number into res_nr
 	from reservation
