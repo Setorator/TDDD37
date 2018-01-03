@@ -133,7 +133,7 @@ end //
 -- #################### Set up triggers ########################
 -- #############################################################
 
-create trigger rand_ticket_nr before insert on booked_pass
+create trigger rand_ticket_nr after insert on booked
 for each row
 begin
 	declare is_unique boolean;
@@ -225,7 +225,7 @@ begin
 	set tot_price = calculatePrice(flight_nr) * nr_pass
 
 	if(contact = null or calculateFreeSeats(flight_nr) < nr_pass)
-	then select "There were no contact or to litle seats" as message;
+	then select "There were no contact or to litlle seats" as message;
 	else
 	insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
 	end if;
@@ -237,8 +237,33 @@ end//
 -- ################ The view for all flights ###################
 -- #############################################################
 
--- create view allFlights as
+create view allFlights(departure_city, destination_city, departure_time, departure_day, departure_week, departure_year, nr_of_free_seats, current_price_per_seat) as
 
+select schedule_cities.departure,
+       schedule_cities.destination,
+       schedule_cities.dep_time,
+       schedule_cities.day,
+       wFlight.week,
+       schedule_cities.year,
+       calculateFreeSeats(wFlight.flight_id),
+       calculatePrice(wFlight.flight_id)
+from
+(select flight_id, week, schedule from flight) as wFlight 
+left join
+(select schedule_id, cities.departure, cities.destination, schedule.dep_time, schedule.day, schedule.year
+from
+(select schedule_id, dep_time, day, year, route from weekly_schedule) as schedule
+left join
+(select dep.route_id, dep.name as departure, dest.name as destination
+from
+(select route.route_id, airport.name from route, airport where route.dep_from = airport.airport_code) as dep,
+left join
+(select route.route_id, airport.name from route, airport where route.dep_from = airport.airport_code) as dest
+on (dep.route_id = arr.route_id)) as cities
+on (schedule.route_id = citys.route_id)) as schedule_cities 
+on (wFlight.schedule = schedule_cities.schedule_id)
+
+;
 -- #############################################################
 -- ##################### End delimiter #########################
 -- #############################################################
