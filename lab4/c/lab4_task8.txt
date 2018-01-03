@@ -1,0 +1,24 @@
+Task 8a:
+   One way to protect the credit card information could be to encrypt the
+   information we want to protect. Once information is stored it is protected
+   by an encryption function and once information is accessed a decryption
+   function is used.
+   Another way could be to only grant access of the credit card information to
+   specific admins with personal passcodes. In other words, anyone can add new
+   credit card information but to access it and retrieve it you have to be an
+   admin and enter your personal passcodes.
+
+Task 8b:
+   1. The usage of stored procedures MIGHT improve the performance of a server-
+   client system since less information/operations need to be transfered between
+   the two. As long as the amount of clients connected to the server is low
+   enough or that the server can handle a large amount of clients.
+   2. It gives the user a simpler view of the database since there are pre-
+   defined functions/procedures that can be used.
+   3. Say that there is multiple client applications who want to use the same
+   operations on the database and say that these clients are written in
+   different programming languages. This would mean that all the clients would
+   need to implement the same operations but in their own programming language.
+   4. Stored procedures is also good in order to maintain a good security since
+   the users have no access to the "inside operations" of the database and is
+   only allowed to see what the database wants them to see.
