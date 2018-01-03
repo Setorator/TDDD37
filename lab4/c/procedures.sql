@@ -188,6 +188,10 @@ begin
 	if not (flight_nr is null) then
 	   if (calculateFreeSeats(flight_nr) >= nr_of_pass) then
 	      insert into reservation(flight, nr_of_pass) values (flight_nr, nr_of_pass); 
+	      
+	      select res_number into res_nr
+	      from reservation
+	      order by res_number desc limit 1;
 	   else
 	      select "There are not enough seats available on the chosen flight" as "Error";
 	   end if;
@@ -195,16 +199,24 @@ begin
 	   select "There exists no flight for the given route, date and time" as "Error";
 	end if;
 
-	select res_number into res_nr
-	from reservation
-	order by res_number desc limit 1;
+	
 end//
 
 create procedure addPassenger(in res_nr integer, in pass_nr integer, in pass_name varchar(60))
 
 begin
-	insert into passenger(pass_id, name) values (pass_nr, pass_name);
-	insert into booked_pass(pass_id, reservation_nr) values (pass_nr, res_nr);
+	declare reservation integer;
+
+	select res_number into reservation
+	from reservation
+	where res_number = res_nr;
+
+	if not (reservation is null) then
+	   insert into passenger(pass_id, name) values (pass_nr, pass_name);
+	   insert into booked_pass(pass_id, reservation_nr) values (pass_nr, res_nr);
+	else
+	   select "The given reservation number does not exist" as "Error";
+	end if;
 end//
 
 create procedure addContact(in res_nr integer, in pass_nr integer, in email varchar(30), in phone bigint)
