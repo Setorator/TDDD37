@@ -113,7 +113,7 @@ create table reservation(
 
 -- Create table credit_card 
 create table credit_card(
-       card_nr integer not null,
+       card_nr bigint not null,
        holder varchar(60) not null, -- First name + last name = 30 + 30 
 
        constraint pk_credit_card primary key(card_nr));
@@ -129,7 +129,7 @@ create table booked_pass(
 -- Create table booked 
 create table booked(
        reservation integer not null,
-       card integer not null,
+       card bigint not null,
        total_price double not null,       
        
        constraint pk_booked primary key(reservation));

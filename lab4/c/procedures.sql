@@ -15,7 +15,7 @@ drop procedure if exists addPayment;
 drop function if exists calculateFreeSeats;
 drop function if exists calculatePrice;
 
-drop trigger if exists rand_ticket_nr;
+drop trigger if exists randTicketNr;
 
 
 delimiter //
@@ -75,14 +75,18 @@ begin
 	declare seats integer default 40;
 	declare occupied_seats integer default 0;
 	declare free_seats integer default 0;
+	  
+	select sum(nr_of_pass) into occupied_seats
+	from reservation
+	where flight = flightnumber and res_number in (
+	      select reservation
+	      from booked);
 
-	select count(*) into occupied_seats
-	from booked_pass 
-	where ticket_nr != 0 and reservation_nr in (
-	      select res_number
-	      from reservation
-	      where flight = flightnumber);
-		
+	if (occupied_seats is null) then
+	   set occupied_seats = 0;
+	end if;
+	      	
+	
 	set free_seats = seats - occupied_seats;
 	return free_seats;
 end //
@@ -138,7 +142,7 @@ end //
 -- #                    Set up triggers                        #
 -- #############################################################
 
-create trigger rand_ticket_nr before insert on booked_pass
+create trigger randTicketNr before insert on booked_pass
 for each row
 begin
 	declare is_unique boolean;
@@ -258,14 +262,18 @@ begin
 
 	select contact, flight, nr_of_pass into con, flight_nr, nr_pass 
 	from reservation
-	where res_num = res_nr;
+	where res_number = res_nr;
 
+	select res_nr, con, flight_nr, nr_pass, calculatePrice(flight_nr) as "Price", calculateFreeSeats(flight_nr) as "Free Seats"; 
+	
 	set tot_price = calculatePrice(flight_nr) * nr_pass;
 
-	if(contact = null or calculateFreeSeats(flight_nr) < nr_pass)
-	then select "There were no contact or to litlle seats" as message;
+	select tot_price as "Tot price";
+
+	if not (con is null or calculateFreeSeats(flight_nr) < nr_pass) then 
+	   insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
 	else
-	insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
+	   select "There were no contact or to litlle seats" as message;
 	end if;
 end//
 
