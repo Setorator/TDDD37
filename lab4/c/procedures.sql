@@ -223,13 +223,26 @@ create procedure addContact(in res_nr integer, in pass_nr integer, in email varc
 
 begin
 	declare con_id integer;
-	
-	select pass_id into con_id
-	from booked_pass
-	where pass_id = pass_nr and reservation_nr = res_nr;
+	declare reservation integer;
 
-	insert into contact(contact_id, e_mail, phone) values (con_id, email, phone);  
-	update reservation set contact = con_id where res_number = res_nr;
+	select res_number into reservation
+	from reservation
+	where res_number = res_nr;
+	
+	if not (reservation is null) then
+	   select pass_id into con_id
+	   from booked_pass
+	   where pass_id = pass_nr and reservation_nr = res_nr;
+
+	   if not (con_id is null) then
+	      insert into contact(contact_id, e_mail, phone) values (con_id, email, phone);  
+	      update reservation set contact = con_id where res_number = res_nr;
+	   else
+	      select "The person is not a passenger of the reservation" as "Error";
+	   end if;
+	else
+	   select "The given reservation number does not exist" as "Error";
+	end if;
 end//
 
 
