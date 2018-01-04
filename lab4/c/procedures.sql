@@ -263,12 +263,8 @@ begin
 	select contact, flight, nr_of_pass into con, flight_nr, nr_pass 
 	from reservation
 	where res_number = res_nr;
-
-	select res_nr, con, flight_nr, nr_pass, calculatePrice(flight_nr) as "Price", calculateFreeSeats(flight_nr) as "Free Seats"; 
 	
 	set tot_price = calculatePrice(flight_nr) * nr_pass;
-
-	select tot_price as "Tot price";
 
 	if not (con is null or calculateFreeSeats(flight_nr) < nr_pass) then 
 	   insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
