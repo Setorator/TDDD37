@@ -257,19 +257,28 @@ begin
 	declare con integer;
 	declare nr_pass integer;
 	declare tot_price integer;
+	declare reservation integer;
 
-	insert into credit_card(card_nr, holder) values (credit_card_number, cardholder_name);
-
-	select contact, flight, nr_of_pass into con, flight_nr, nr_pass 
+	select res_number into reservation
 	from reservation
 	where res_number = res_nr;
+
+	if not (reservation is null) then
+	   insert into credit_card(card_nr, holder) values (credit_card_number, cardholder_name);
+
+	   select contact, flight, nr_of_pass into con, flight_nr, nr_pass 
+	   from reservation
+	   where res_number = res_nr;
 	
 	set tot_price = calculatePrice(flight_nr) * nr_pass;
 
-	if not (con is null or calculateFreeSeats(flight_nr) < nr_pass) then 
-	   insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
+	   if not (con is null or calculateFreeSeats(flight_nr) < nr_pass) then 
+	      insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
+	   else
+	      select "There were no contact or to litlle seats" as message;
+	   end if;
 	else
-	   select "There were no contact or to litlle seats" as message;
+	   select "The given reservation number does not exist" as "Error";
 	end if;
 end//
 
