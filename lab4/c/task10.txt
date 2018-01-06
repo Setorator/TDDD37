@@ -1,0 +1,21 @@
+A: No. MySQL locks the resources used when doing changes to a table. 
+   For us only one was able to complete at all, the other terminal
+   froze.
+
+B: If we do not use transactions it is possible to overbookings to 
+   occur since we have no locking of the tables while bookings are
+   made. Example: two bookings run at almost the same time and the 
+   first one finish after that the last safety-check (in the 
+   addPayment()-procedure). Then the last booking execution will
+   finish without errors as well.
+
+C: We proved our thesis. We managed to overbook by implementing the
+   sleep(5) right after the passing of the fail-safes in our 
+   addPayment()-procedure.
+
+D: Our solution is to lock all relevant tables by referring to the 
+   allFlights view and the credit_card table. This solves our problem
+   since no other user could book whie the resources are locked by
+   another process. 
+
+

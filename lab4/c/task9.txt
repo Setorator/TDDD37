@@ -1,0 +1,13 @@
+A: Done
+
+B: No because transaction A has not yet commited.  
+
+C: We can not do it since A has not yet commited. 
+   The only way B can access the reservations from A
+   is if A has commited (i.e. updated) the database and 
+   B has ended its current transaction and started a 
+   new one. This is because B is working with the state 
+   of the database when starting the transaction, this
+   is the concept of isolation of transactions.
+
+

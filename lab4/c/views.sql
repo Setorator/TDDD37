@@ -42,8 +42,8 @@ select f.flight_id, calculateFreeSeats(f.flight_id), calculatePrice(f.flight_id)
 from flight as f;
 
 create view allFlights(
-departure_city,
-destination_city,
+departure_city_name,
+destination_city_name,
 departure_time,
 departure_day,
 departure_week,

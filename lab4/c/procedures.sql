@@ -99,7 +99,7 @@ begin
 	declare route_factor double;
 	declare weekday_factor double;
 	declare profit_factor double;
-	declare booked_passengers double;
+	declare booked_passengers integer unsigned;
 
 	set booked_passengers = 40 - calculateFreeSeats(flightnumber);
 	
@@ -133,7 +133,7 @@ begin
 		    from flight 
 		    where flight_id = flightnumber));
 
-	set total_price = route_factor * weekday_factor * (booked_passengers + 1.0)* 0.025 * profit_factor;
+	set total_price = route_factor * weekday_factor * profit_factor * ((booked_passengers + 1.0)/40);
 	
 	return total_price;
 end //
@@ -317,6 +317,7 @@ begin
 	      if not (calculateFreeSeats(flight_nr) < reserved_pass) then 
 	      	 set tot_price = calculatePrice(flight_nr) * reserved_pass;
 	      	 insert into credit_card(card_nr, holder) values (credit_card_number, cardholder_name);
+		 -- select sleep(5);
 	      	 insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
 	      	 update booked_pass set ticket_nr = 1 where reservation_nr = res_nr;
 	      else

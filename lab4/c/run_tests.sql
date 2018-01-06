@@ -4,7 +4,7 @@
 select "Create tables, procedures and views" as "Message";
 source lab4c_schema.sql;
 source procedures.sql;
--- source views.sql;
+source views.sql;
 
 -- ##################################
 -- #         Run Question 3         #
@@ -18,7 +18,7 @@ source procedures.sql;
 -- ##################################
 
 -- select "Run Question6.sql" as "Message"; 
-source Question6.sql;
+-- source Question6.sql;
 
 -- ##################################
 -- #         Run Question 7         #
