@@ -1,10 +1,11 @@
 
 drop view if exists depCities;
 drop view if exists destCities;
+drop view if exists weeklyFlight;
+drop view if exists schedule;
 drop view if exists depTimeStamp;
 drop view if exists seatView;
-drop view if exists allFlights;z
-
+drop view if exists allFlights;
 
 -- #############################################################
 -- #                The view for all flights                   #
@@ -21,13 +22,19 @@ select route.route_id, airport.name
 from route, airport
 where route.arr_to = airport.airport_code;
 
+create view weeklyFlight(flight_id, schedule, week) as 
+select flight_id, schedule, week from flight;
+
+create view schedule(schedule_id, route, dep_time, day, year) as
+select schedule_id, route, dep_time, day, year from weekly_schedule;
+
 create view depTimeStamp(flight, route, dep_time, day, week, year) as
-select flight_id, schedule.route, schedule.dep_time, schedule.day, wFlight.week, schedule.year 
+select weeklyFlight.flight_id, schedule.route, schedule.dep_time, schedule.day, weeklyFlight.week, schedule.year 
 from
-(select flight_id, week, schedule from flight) as wFlight 
+weeklyFlight
 left join
-(select schedule_id, dep_time, day, year, route from weekly_schedule) as schedule
-on (wFlight.schedule = schedule.schedule_id);
+schedule
+on (weeklyFlight.schedule = schedule.schedule_id);
 
 create view seatView(flight, nr_of_free_seats, current_price_per_seat) as
 
@@ -44,17 +51,17 @@ departure_year,
 nr_of_free_seats,
 current_price_per_seat) as
 
-select dep.departure_city, dest.destination_city,
+select depCities.departure_city, destCities.destination_city,
 flight_date.dep_time, flight_date.day, flight_date.week, flight_date.year,
 seats.nr_of_free_seats, seats.current_price_per_seat
 from
 
-(select route, departure_city from depCities) as dep
+depCities
 inner join
-((select route, destination_city from destCities) as dest,
+(destCities,
 (select flight, route, dep_time, day, week, year from depTimeStamp) as flight_date,
 (select flight, nr_of_free_seats, current_price_per_seat from seatView) as seats)
 on (seats.flight = flight_date.flight and
-   dep.route = dest.route and
-   dep.route = flight_date.route and
-   dest.route = flight_date.route);
+   depCities.route = destCities.route and
+   depCities.route = flight_date.route and
+   destCities.route = flight_date.route);
