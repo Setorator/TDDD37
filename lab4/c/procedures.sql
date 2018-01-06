@@ -12,6 +12,7 @@ drop procedure if exists addPassenger;
 drop procedure if exists addContact;
 drop procedure if exists addPayment;
 
+drop function if exists calculatePassengers;
 drop function if exists calculateFreeSeats;
 drop function if exists calculatePrice;
 
@@ -76,17 +77,17 @@ begin
 	declare occupied_seats integer default 0;
 	declare free_seats integer default 0;
 	  
-	select sum(nr_of_pass) into occupied_seats
-	from reservation
-	where flight = flightnumber and res_number in (
-	      select reservation
-	      from booked);
+	select count(*) into occupied_seats
+	from booked_pass
+	where ticket_nr != 0 and reservation_nr in (
+	      select res_number
+	      from reservation
+	      where flight = flightnumber);
 
 	if (occupied_seats is null) then
 	   set occupied_seats = 0;
 	end if;
 	      	
-	
 	set free_seats = seats - occupied_seats;
 	return free_seats;
 end //
@@ -137,12 +138,29 @@ begin
 	return total_price;
 end //
 
+create function calculatePassengers(res_nr integer)
+returns integer
+begin
+	declare nr_pass integer;
+
+	select count(*) into nr_pass
+	from booked_pass
+	where reservation_nr = res_nr;
+
+	if (nr_pass is null) then 
+	   set nr_pass = 0;
+	end if;
+
+	return nr_pass;
+
+end //
+
 
 -- #############################################################
 -- #                    Set up triggers                        #
 -- #############################################################
 
-create trigger randTicketNr before insert on booked_pass
+create trigger randTicketNr before update on booked_pass
 for each row
 begin
 	declare is_unique boolean;
@@ -150,7 +168,7 @@ begin
 
 	set is_unique = false;
 	
-	if (new.ticket_nr = 0)
+	if (new.ticket_nr = 1)
 	then		  
 		
 	repeat
@@ -209,15 +227,38 @@ end//
 create procedure addPassenger(in res_nr integer, in pass_nr integer, in pass_name varchar(60))
 
 begin
-	declare reservation integer;
+	declare reserved integer;
+	declare reserved_pass integer;
+	declare actual_pass integer;
+	declare payed integer;
 
-	select res_number into reservation
+	select res_number into reserved
 	from reservation
 	where res_number = res_nr;
 
-	if not (reservation is null) then
-	   insert into passenger(pass_id, name) values (pass_nr, pass_name);
-	   insert into booked_pass(pass_id, reservation_nr) values (pass_nr, res_nr);
+	select count(*) into actual_pass
+	from booked_pass
+	where reservation_nr = res_nr;
+
+	select nr_of_pass into reserved_pass
+	from reservation
+	where res_number = res_nr;
+
+	select reservation into payed
+	from booked
+	where reservation = res_nr;
+	
+	if not (reserved is null) then
+	   if (actual_pass < reserved_pass) then
+	       if (payed is null) then
+	       	  insert into passenger(pass_id, name) values (pass_nr, pass_name);
+	      	  insert into booked_pass(pass_id, reservation_nr) values (pass_nr, res_nr);
+	       else
+		  select "The booking has already been payed and no futher passengers can be added" as "Error";
+	       end if;
+	    else
+	       select "The number of reserved passengers has already been reached" as "Error";
+	    end if;    
 	else
 	   select "The given reservation number does not exist" as "Error";
 	end if;
@@ -227,13 +268,13 @@ create procedure addContact(in res_nr integer, in pass_nr integer, in email varc
 
 begin
 	declare con_id integer;
-	declare reservation integer;
+	declare reserved integer;
 
-	select res_number into reservation
+	select res_number into reserved
 	from reservation
 	where res_number = res_nr;
 	
-	if not (reservation is null) then
+	if not (reserved is null) then
 	   select pass_id into con_id
 	   from booked_pass
 	   where pass_id = pass_nr and reservation_nr = res_nr;
@@ -254,26 +295,30 @@ create procedure addPayment(in res_nr integer, in cardholder_name varchar(60), i
 
 begin
 	declare flight_nr integer;
+	declare reserved_pass integer;
 	declare con integer;
 	declare nr_pass integer;
 	declare tot_price integer;
-	declare reservation integer;
+	declare reserved integer;
 
-	select res_number into reservation
+	select res_number into reserved
 	from reservation
 	where res_number = res_nr;
 
-	if not (reservation is null) then
+	if not (reserved is null) then
 
-	   select contact, flight, nr_of_pass into con, flight_nr, nr_pass 
+	   select contact, flight into con, flight_nr 
 	   from reservation
 	   where res_number = res_nr;
+
+	   set reserved_pass = calculatePassengers(res_nr);
 	
 	   if not (con is null) then 
-	      if not (calculateFreeSeats(flight_nr) < nr_pass) then 
-	      	 set tot_price = calculatePrice(flight_nr) * nr_pass;
+	      if not (calculateFreeSeats(flight_nr) < reserved_pass) then 
+	      	 set tot_price = calculatePrice(flight_nr) * reserved_pass;
 	      	 insert into credit_card(card_nr, holder) values (credit_card_number, cardholder_name);
 	      	 insert into booked(reservation, card, total_price) values (res_nr, credit_card_number, tot_price);
+	      	 update booked_pass set ticket_nr = 1 where reservation_nr = res_nr;
 	      else
 		 select "The payment contains more passengers than there are free seats" as "Error";
   	      end if;

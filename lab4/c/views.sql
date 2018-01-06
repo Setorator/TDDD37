@@ -51,17 +51,22 @@ departure_year,
 nr_of_free_seats,
 current_price_per_seat) as
 
-select depCities.departure_city, destCities.destination_city,
-flight_date.dep_time, flight_date.day, flight_date.week, flight_date.year,
-seats.nr_of_free_seats, seats.current_price_per_seat
+select depCities.departure_city, 
+destCities.destination_city,
+depTimeStamp.dep_time, 
+depTimeStamp.day, 
+depTimeStamp.week, 
+depTimeStamp.year,
+seatView.nr_of_free_seats, 
+seatView.current_price_per_seat
 from
 
 depCities
 inner join
 (destCities,
-(select flight, route, dep_time, day, week, year from depTimeStamp) as flight_date,
-(select flight, nr_of_free_seats, current_price_per_seat from seatView) as seats)
-on (seats.flight = flight_date.flight and
+depTimeStamp,
+seatView)
+on (seatView.flight = depTimeStamp.flight and
    depCities.route = destCities.route and
-   depCities.route = flight_date.route and
-   destCities.route = flight_date.route);
+   depCities.route = depTimeStamp.route and
+   destCities.route = depTimeStamp.route);
